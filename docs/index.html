@@ -87,6 +87,10 @@
 
   *, *::before, *::after { box-sizing: border-box; }
 
+  /* A class-level `display` outranks the browser's own [hidden] rule, so state
+     it explicitly — without this, every solution panel is visible on load. */
+  [hidden] { display: none !important; }
+
   body {
     margin: 0;
     background: var(--ground);
