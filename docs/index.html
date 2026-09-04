@@ -1,0 +1,1167 @@
+<title>Applied Python Exercise Sheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+
+<style>
+  :root {
+    /* light palette --------------------------------------------------- */
+    --ground:      #EFF2F7;
+    --surface:     #FFFFFF;
+    --surface-sub: #F5F7FB;
+    --ink:         #101B31;
+    --ink-soft:    #33415C;
+    --muted:       #5E6C88;
+    --border:      #D6DEEB;
+    --border-firm: #BFCADC;
+    --masthead-bg: #1B2E52;
+    --gold:        #B07C05;
+    --gold-fill:   #F6C325;
+    --gold-wash:   #FDF3D6;
+    --clay:        #A8410F;
+    --clay-wash:   #FBEDE6;
+
+    /* code panels stay dark in both themes ---------------------------- */
+    --code-bg:     #101B33;
+    --code-bg-alt: #0C1528;
+    --code-ink:    #DCE4F2;
+    --code-dim:    #8A9AB8;
+    --code-rule:   #25355A;
+    --c-key:       #F1A9C4;
+    --c-str:       #9CD8A6;
+    --c-num:       #F6C325;
+    --c-com:       #93A4C4;
+    --c-fn:        #8FC4F5;
+    --c-builtin:   #C9B6F7;
+
+    --shadow: 0 1px 2px rgba(16, 27, 49, .05), 0 8px 24px -12px rgba(16, 27, 49, .18);
+    --radius: 10px;
+    --measure: 66ch;
+
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0B1322;
+      --surface:     #121D33;
+      --surface-sub: #16233C;
+      --ink:         #E7ECF6;
+      --ink-soft:    #C3CDE1;
+      --muted:       #93A2BE;
+      --border:      #23334F;
+      --border-firm: #334566;
+      --masthead-bg: #0F1B31;
+      --gold:        #F6C325;
+      --gold-fill:   #F6C325;
+      --gold-wash:   #2A2313;
+      --clay:        #F0A87C;
+      --clay-wash:   #2C1A12;
+      --code-bg:     #0A1120;
+      --code-bg-alt: #070D1A;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 10px 28px -14px rgba(0, 0, 0, .7);
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0B1322;
+    --surface:     #121D33;
+    --surface-sub: #16233C;
+    --ink:         #E7ECF6;
+    --ink-soft:    #C3CDE1;
+    --muted:       #93A2BE;
+    --border:      #23334F;
+    --border-firm: #334566;
+    --masthead-bg: #0F1B31;
+    --gold:        #F6C325;
+    --gold-fill:   #F6C325;
+    --gold-wash:   #2A2313;
+    --clay:        #F0A87C;
+    --clay-wash:   #2C1A12;
+    --code-bg:     #0A1120;
+    --code-bg-alt: #070D1A;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 10px 28px -14px rgba(0, 0, 0, .7);
+    color-scheme: dark;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { width: min(1120px, 100% - 2.5rem); margin-inline: auto; }
+
+  /* ---------------------------------------------------------- masthead */
+  .masthead {
+    background: var(--masthead-bg);
+    color: #EEF3FB;
+    padding: 2.75rem 0 2.25rem;
+    border-bottom: 3px solid var(--gold-fill);
+  }
+
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .74rem;
+    font-weight: 500;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--gold-fill);
+    margin: 0 0 .9rem;
+  }
+
+  .masthead h1 {
+    font-size: clamp(1.85rem, 1.2rem + 2.6vw, 3rem);
+    line-height: 1.08;
+    letter-spacing: -.022em;
+    font-weight: 700;
+    margin: 0 0 .85rem;
+    text-wrap: balance;
+    max-width: 20ch;
+  }
+
+  .masthead p {
+    margin: 0;
+    max-width: 62ch;
+    color: #B9C7DF;
+    font-size: 1.02rem;
+  }
+
+  .facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem 2.25rem;
+    margin-top: 1.75rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid rgba(255, 255, 255, .13);
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .8rem;
+    color: #9FB1CE;
+  }
+  .facts b { color: #EEF3FB; font-weight: 600; }
+
+  /* ------------------------------------------------------------ toolbar */
+  .toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: color-mix(in srgb, var(--ground) 92%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .toolbar-in {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: .7rem 0;
+  }
+  .counter {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .8rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+  }
+  .pips { display: flex; gap: .3rem; }
+  .pip {
+    width: 22px; height: 5px; border-radius: 3px;
+    background: var(--border-firm);
+    transition: background .18s ease;
+  }
+  .pip.on { background: var(--gold-fill); }
+
+  /* -------------------------------------------------------------- button */
+  .btn {
+    font-family: "IBM Plex Sans", sans-serif;
+    font-size: .875rem;
+    font-weight: 600;
+    letter-spacing: .005em;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--border-firm);
+    border-radius: 7px;
+    padding: .5rem 1rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: .55rem;
+    transition: background .15s ease, border-color .15s ease, transform .08s ease;
+  }
+  .btn:hover { border-color: var(--gold); background: var(--surface-sub); }
+  .btn:active { transform: translateY(1px); }
+  .btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+  .btn-solve {
+    background: var(--gold-fill);
+    border-color: #D9A916;
+    color: #22190A;
+    font-size: .9rem;
+    padding: .62rem 1.15rem;
+  }
+  .btn-solve:hover { background: #EDB916; border-color: #C99A12; }
+  .btn-solve .chev { transition: transform .2s ease; font-size: .72em; }
+  .btn-solve[aria-expanded="true"] .chev { transform: rotate(180deg); }
+
+  /* ------------------------------------------------------------- primer */
+  .primer {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem 1.6rem;
+    margin: 2.25rem 0 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: 1.5rem 2rem;
+    align-items: start;
+  }
+  @media (max-width: 720px) { .primer { grid-template-columns: 1fr; } }
+
+  .primer h2 {
+    font-size: .78rem;
+    font-family: "IBM Plex Mono", monospace;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+    margin: 0 0 .8rem;
+  }
+  .primer p { margin: 0 0 .7rem; color: var(--ink-soft); font-size: .93rem; }
+  .primer p:last-child { margin-bottom: 0; }
+
+  .filelist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: .55rem;
+    font-size: .89rem;
+  }
+  .filelist li { display: flex; gap: .75rem; align-items: baseline; }
+  .filelist code {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .84rem;
+    color: var(--ink);
+    background: var(--surface-sub);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: .1rem .45rem;
+    white-space: nowrap;
+  }
+  .filelist span { color: var(--muted); }
+
+  /* ----------------------------------------------------------- exercise */
+  main { padding-bottom: 4rem; }
+
+  .ex {
+    margin-top: 2.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .ex-head {
+    display: flex;
+    gap: 1.25rem;
+    align-items: baseline;
+    padding: 1.5rem 1.6rem 0;
+  }
+  .ex-num {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 2.1rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -.05em;
+    color: var(--gold);
+    flex: none;
+    font-variant-numeric: tabular-nums;
+  }
+  .ex-title { min-width: 0; }
+  .ex-title h2 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: -.017em;
+    margin: 0 0 .4rem;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .35rem .9rem;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .755rem;
+    color: var(--muted);
+    letter-spacing: .01em;
+  }
+  .meta span::after { content: " ·"; color: var(--border-firm); margin-left: .55rem; }
+  .meta span:last-child::after { content: ""; }
+
+  .ex-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    gap: 1.75rem 2.25rem;
+    padding: 1.5rem 1.6rem 1.6rem;
+  }
+  @media (max-width: 800px) { .ex-body { grid-template-columns: 1fr; gap: 1.5rem; } }
+
+  .panel-label {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .73rem;
+    font-weight: 500;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 .85rem;
+    padding-bottom: .5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  ol.tasks {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: task;
+    display: flex;
+    flex-direction: column;
+    gap: .7rem;
+  }
+  ol.tasks li {
+    counter-increment: task;
+    position: relative;
+    padding-left: 2.05rem;
+    font-size: .945rem;
+    color: var(--ink-soft);
+  }
+  ol.tasks li::before {
+    content: counter(task) ".";
+    position: absolute;
+    left: 0;
+    top: .1rem;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .82rem;
+    font-weight: 500;
+    color: var(--gold);
+    font-variant-numeric: tabular-nums;
+  }
+
+  ul.hints {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: .65rem;
+  }
+  ul.hints li {
+    position: relative;
+    padding-left: 1.5rem;
+    font-size: .91rem;
+    color: var(--ink-soft);
+  }
+  ul.hints li::before {
+    content: "#";
+    position: absolute;
+    left: 0;
+    top: .02rem;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .85rem;
+    color: var(--muted);
+  }
+
+  code.inl {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .855em;
+    background: var(--surface-sub);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: .06em .34em;
+    color: var(--ink);
+    word-break: break-word;
+  }
+
+  /* -------------------------------------------------------------- code */
+  .codewrap { position: relative; margin: 0 0 1.1rem; }
+  .codewrap:last-child { margin-bottom: 0; }
+  .code-cap {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .72rem;
+    letter-spacing: .06em;
+    color: var(--muted);
+    margin: 0 0 .4rem;
+  }
+  pre {
+    margin: 0;
+    background: var(--code-bg);
+    border: 1px solid var(--code-rule);
+    border-radius: 8px;
+    padding: .95rem 1.05rem;
+    overflow-x: auto;
+    font-size: .82rem;
+    line-height: 1.62;
+    tab-size: 4;
+  }
+  pre code {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    color: var(--code-ink);
+    background: none;
+    padding: 0;
+    white-space: pre;
+  }
+  .copy {
+    position: absolute;
+    top: .45rem;
+    right: .45rem;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .68rem;
+    letter-spacing: .04em;
+    color: var(--code-dim);
+    background: color-mix(in srgb, var(--code-bg-alt) 88%, transparent);
+    border: 1px solid var(--code-rule);
+    border-radius: 5px;
+    padding: .22rem .5rem;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity .15s ease, color .15s ease;
+  }
+  .codewrap:hover .copy, .copy:focus-visible { opacity: 1; }
+  .copy:hover { color: var(--code-ink); }
+  .copy:focus-visible { outline: 2px solid var(--gold-fill); outline-offset: 1px; }
+  .codewrap:has(.code-cap) .copy { top: 1.7rem; }
+
+  /* highlight.js tokens, themed here so both modes stay legible */
+  .hljs-keyword, .hljs-literal, .hljs-type { color: var(--c-key); }
+  .hljs-string, .hljs-meta .hljs-string { color: var(--c-str); }
+  .hljs-number { color: var(--c-num); }
+  .hljs-comment { color: var(--c-com); font-style: italic; }
+  .hljs-title, .hljs-title.function_ { color: var(--c-fn); }
+  .hljs-built_in, .hljs-title.class_ { color: var(--c-builtin); }
+  .hljs-params { color: var(--code-ink); }
+  .hljs-attr, .hljs-variable { color: var(--code-ink); }
+  .hljs-meta { color: var(--c-com); }
+
+  /* ---------------------------------------------------------- solution */
+  .solve-bar {
+    border-top: 1px solid var(--border);
+    background: var(--surface-sub);
+    padding: 1rem 1.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .solve-note {
+    font-size: .84rem;
+    color: var(--muted);
+    max-width: 46ch;
+  }
+
+  .solution {
+    border-top: 1px solid var(--border);
+    padding: 1.6rem;
+    background: var(--surface);
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: 1.6rem 2.25rem;
+    align-items: start;
+    animation: reveal .28s ease both;
+  }
+  @media (max-width: 800px) { .solution { grid-template-columns: 1fr; } }
+
+  @keyframes reveal {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .solution { animation: none; }
+    .btn, .pip, .copy { transition: none; }
+  }
+
+  ul.why {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: .7rem;
+  }
+  ul.why li {
+    position: relative;
+    padding-left: 1.35rem;
+    font-size: .91rem;
+    color: var(--ink-soft);
+  }
+  ul.why li::before {
+    content: "";
+    position: absolute;
+    left: .25rem;
+    top: .6em;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--gold-fill);
+  }
+
+  .slip {
+    margin-top: 1.15rem;
+    background: var(--clay-wash);
+    border: 1px solid color-mix(in srgb, var(--clay) 24%, transparent);
+    border-radius: 7px;
+    padding: .8rem .95rem;
+    font-size: .875rem;
+    color: var(--ink-soft);
+  }
+  .slip b {
+    display: block;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .7rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--clay);
+    margin-bottom: .3rem;
+    font-weight: 600;
+  }
+
+  .checkpoint {
+    margin-top: 1.15rem;
+    background: var(--gold-wash);
+    border: 1px solid color-mix(in srgb, var(--gold) 28%, transparent);
+    border-radius: 7px;
+    padding: .8rem .95rem;
+    font-size: .875rem;
+    color: var(--ink-soft);
+  }
+  .checkpoint b {
+    display: block;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .7rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: .3rem;
+    font-weight: 600;
+  }
+
+  /* ------------------------------------------------------------ footer */
+  footer {
+    border-top: 1px solid var(--border);
+    margin-top: 3rem;
+    padding: 2rem 0 3rem;
+    color: var(--muted);
+    font-size: .87rem;
+  }
+  footer p { margin: 0 0 .6rem; max-width: var(--measure); }
+  footer p:last-child { margin-bottom: 0; }
+  footer a { color: var(--gold); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+
+  .visually-hidden {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+</style>
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="eyebrow">Workshop 2 · Hands-on training</p>
+    <h1>Applied Python Programming and Core AI Libraries</h1>
+    <p>Four checkpoint exercises, one per section. Work the task with the hints first — the
+      solution is one click away, and it is worth far less to you before you have tried.</p>
+    <div class="facts">
+      <span><b>4</b> exercises</span>
+      <span><b>70</b> minutes total</span>
+      <span><b>Sections 1–4</b></span>
+      <span>Follow-up to Workshop 1: Environment &amp; Tooling</span>
+    </div>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="wrap toolbar-in">
+    <div class="counter">
+      <span class="pips" aria-hidden="true">
+        <i class="pip" data-pip="1"></i><i class="pip" data-pip="2"></i>
+        <i class="pip" data-pip="3"></i><i class="pip" data-pip="4"></i>
+      </span>
+      <span id="count" role="status">0 of 4 solutions shown</span>
+    </div>
+    <button class="btn" id="all-btn" type="button">Reveal all solutions</button>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <section class="primer">
+    <div>
+      <h2>Before you start</h2>
+      <p>Exercises 1, 2 and 4 are self-contained — everything you need is on this page.
+        Exercise 3 reads a file from the workshop repository.</p>
+      <div class="codewrap">
+        <pre><code class="language-bash">uv run jupyter lab        # or open the folder in VS Code
+uv run python sensor_readings.py</code></pre>
+      </div>
+    </div>
+    <div>
+      <h2>Files you will touch</h2>
+      <ul class="filelist">
+        <li><code>sensor_readings.py</code> <span>Exercise 1 — you create it</span></li>
+        <li><code>grading.py</code> <span>Exercise 2 — you create it, then import it</span></li>
+        <li><code>data/readings.csv</code> <span>Exercise 3 — 60 rows, 9 of them broken</span></li>
+        <li><code>clean.json</code> <span>Exercise 3 — your output</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================================================ EX 1 -->
+  <article class="ex" id="ex1">
+    <div class="ex-head">
+      <div class="ex-num">01</div>
+      <div class="ex-title">
+        <h2>Readings and collections</h2>
+        <div class="meta">
+          <span>Section 1</span><span>10 minutes</span><span>work in pairs</span>
+          <span>syntax · built-in types · sequences</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ex-body">
+      <div>
+        <p class="panel-label">Your task</p>
+        <div class="codewrap">
+          <p class="code-cap">sensor_readings.py — start from this</p>
+          <pre><code class="language-python">readings = [21.5, 23.0, 19.8, 25.1, 22.4]
+labels   = ("node-a", "node-b", "node-c")</code></pre>
+          <button class="copy" type="button">copy</button>
+        </div>
+        <ol class="tasks">
+          <li>Print the type of each variable.</li>
+          <li>Report the first, last and middle reading.</li>
+          <li>Build a list of the readings above <code class="inl">22.0</code>.</li>
+          <li>Format a one-line summary with an f-string — for example
+            <code class="inl">node-a: 5 readings, mean 22.36</code>.</li>
+          <li>Explain why <code class="inl">labels</code> cannot be appended to.</li>
+        </ol>
+        <div class="checkpoint">
+          <b>Check as you go</b>
+          Try each step in the REPL on its own before you write the full script.
+        </div>
+      </div>
+
+      <div>
+        <p class="panel-label">Hints</p>
+        <ul class="hints">
+          <li><code class="inl">type(x)</code> tells you what you are actually holding.</li>
+          <li>Negative indices count from the end — <code class="inl">readings[-1]</code>.</li>
+          <li><code class="inl">len(seq) // 2</code> lands on the middle item.</li>
+          <li>A comprehension has the shape
+            <code class="inl">[expr for item in seq if condition]</code>.</li>
+          <li><code class="inl">f"{value:.2f}"</code> rounds inside the string.</li>
+          <li>A tuple cannot be changed once it is created.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="solve-bar">
+      <p class="solve-note">Attempt all five steps first. Step 5 is the one worth arguing about.</p>
+      <button class="btn btn-solve" type="button" data-solve="1" aria-expanded="false"
+              aria-controls="sol1">Show solution <span class="chev">▼</span></button>
+    </div>
+
+    <div class="solution" id="sol1" hidden>
+      <div>
+        <p class="panel-label">Worked solution</p>
+        <div class="codewrap">
+          <pre><code class="language-python"># sensor_readings.py
+readings = [21.5, 23.0, 19.8, 25.1, 22.4]
+labels   = ("node-a", "node-b", "node-c")
+
+# 1. what am I holding?
+print(type(readings), type(labels))
+# &lt;class 'list'&gt; &lt;class 'tuple'&gt;
+
+# 2. first, last, middle
+first, last = readings[0], readings[-1]
+middle = readings[len(readings) // 2]
+print(first, last, middle)          # 21.5 22.4 19.8
+
+# 3. filter in a single pass
+hot = [r for r in readings if r &gt; 22.0]
+print(hot)                          # [23.0, 25.1, 22.4]
+
+# 4. derive the mean, format it where it is used
+mean = sum(readings) / len(readings)
+print(f"{labels[0]}: {len(readings)} readings, mean {mean:.2f}")
+# node-a: 5 readings, mean 22.36
+
+# 5. labels is a tuple - immutable by design.
+#    labels.append("node-d") raises AttributeError.</code></pre>
+          <button class="copy" type="button">copy</button>
+        </div>
+      </div>
+      <div>
+        <p class="panel-label">Why it works</p>
+        <ul class="why">
+          <li><code class="inl">type()</code> confirms list versus tuple before you rely on either.</li>
+          <li><code class="inl">readings[-1]</code> beats <code class="inl">readings[len(readings) - 1]</code>.</li>
+          <li>The comprehension filters in one pass — no accumulator, no counter.</li>
+          <li><code class="inl">mean</code> is derived on demand, never stored alongside the data it summarises.</li>
+          <li>The f-string keeps the formatting next to the value it describes.</li>
+          <li><code class="inl">labels</code> stays a tuple, so the node names cannot be changed by accident.</li>
+        </ul>
+        <div class="slip">
+          <b>Common slip</b>
+          Reaching for <code class="inl">readings[6]</code> and hitting <code class="inl">IndexError</code>.
+          Five items means valid indices 0–4, or −1 to −5 from the end.
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- ============================================================ EX 2 -->
+  <article class="ex" id="ex2">
+    <div class="ex-head">
+      <div class="ex-num">02</div>
+      <div class="ex-title">
+        <h2>Branching, loops and functions</h2>
+        <div class="meta">
+          <span>Section 2</span><span>15 minutes</span>
+          <span>control flow · functions · modules</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ex-body">
+      <div>
+        <p class="panel-label">Your task</p>
+        <div class="codewrap">
+          <p class="code-cap">grading.py — start from this</p>
+          <pre><code class="language-python">scores = [0.91, 0.47, 0.78, 0.55, 0.96]</code></pre>
+          <button class="copy" type="button">copy</button>
+        </div>
+        <ol class="tasks">
+          <li>Write <code class="inl">grade(score)</code> returning <code class="inl">"high"</code>,
+            <code class="inl">"mid"</code> or <code class="inl">"low"</code> using if / elif / else.</li>
+          <li>Give it threshold arguments with sensible defaults.</li>
+          <li>Loop with <code class="inl">enumerate</code> and print the index, score and grade
+            for every entry.</li>
+          <li>Stop early once a score above <code class="inl">0.95</code> is found, and report
+            which index it was.</li>
+          <li>Save it as <code class="inl">grading.py</code> and import it from another file.</li>
+        </ol>
+        <div class="checkpoint">
+          <b>Constraint</b>
+          Keep <code class="inl">grade()</code> free of print statements. A function that prints
+          cannot be tested.
+        </div>
+      </div>
+
+      <div>
+        <p class="panel-label">Hints</p>
+        <ul class="hints">
+          <li>if / elif / else stops at the first match — order the branches accordingly.</li>
+          <li><code class="inl">def f(x, high=0.9)</code> sets a default value.</li>
+          <li><code class="inl">enumerate(seq)</code> yields the index and the value together.</li>
+          <li><code class="inl">break</code> leaves the loop immediately.</li>
+          <li>Return a value; do not print inside the function.</li>
+          <li>Guard the loop with <code class="inl">if __name__ == "__main__":</code> so importing
+            the module stays quiet.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="solve-bar">
+      <p class="solve-note">Prove step 5 by importing <code class="inl">grade()</code> from a
+        second file — that is the whole point of the exercise.</p>
+      <button class="btn btn-solve" type="button" data-solve="2" aria-expanded="false"
+              aria-controls="sol2">Show solution <span class="chev">▼</span></button>
+    </div>
+
+    <div class="solution" id="sol2" hidden>
+      <div>
+        <p class="panel-label">Worked solution</p>
+        <div class="codewrap">
+          <pre><code class="language-python"># grading.py
+def grade(score, high=0.90, mid=0.60):
+    """Bucket a score into three bands."""
+    if score &gt;= high:
+        return "high"
+    elif score &gt;= mid:
+        return "mid"
+    return "low"
+
+
+if __name__ == "__main__":
+    scores = [0.91, 0.47, 0.78, 0.55, 0.96]
+    for i, s in enumerate(scores):
+        print(i, s, grade(s))
+        if s &gt; 0.95:
+            print(f"early stop at index {i}")
+            break
+
+# 0 0.91 high
+# 1 0.47 low
+# 2 0.78 mid
+# 3 0.55 low
+# 4 0.96 high
+# early stop at index 4</code></pre>
+          <button class="copy" type="button">copy</button>
+        </div>
+        <div class="codewrap">
+          <p class="code-cap">…and from any other file in the project</p>
+          <pre><code class="language-python">from grading import grade
+
+grade(0.83)                 # 'mid'
+grade(0.83, mid=0.90)       # 'low'  - thresholds are arguments</code></pre>
+          <button class="copy" type="button">copy</button>
+        </div>
+      </div>
+      <div>
+        <p class="panel-label">Why it works</p>
+        <ul class="why">
+          <li>Defaults let callers ignore the thresholds until the day they need to change them.</li>
+          <li>Early returns keep the branches flat — no nesting, no <code class="inl">else</code> tail.</li>
+          <li><code class="inl">enumerate</code> avoids <code class="inl">range(len(scores))</code>
+            and the indexing that comes with it.</li>
+          <li><code class="inl">break</code> stops the scan the moment the goal is met — no wasted
+            iterations.</li>
+          <li>The function returns instead of printing, so it can be imported, reused and tested.</li>
+          <li>The <code class="inl">__main__</code> guard means importing <code class="inl">grading</code>
+            does not run the demo loop.</li>
+        </ul>
+        <div class="slip">
+          <b>Common slip</b>
+          Printing inside the function instead of returning. It looks identical in the terminal and
+          is useless everywhere else.
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- ============================================================ EX 3 -->
+  <article class="ex" id="ex3">
+    <div class="ex-head">
+      <div class="ex-num">03</div>
+      <div class="ex-title">
+        <h2>Robust file processing</h2>
+        <div class="meta">
+          <span>Section 3</span><span>20 minutes</span>
+          <span>exceptions · file I/O</span><span>data/readings.csv</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ex-body">
+      <div>
+        <p class="panel-label">Your task</p>
+        <div class="codewrap">
+          <p class="code-cap">data/readings.csv — 60 rows, and not all of them are clean</p>
+          <pre><code class="language-python">ts,node,temp_c,hum
+2026-03-05 08:00:00,node-a,20.22,65.7
+2026-03-05 09:20:00,node-b,,69.2
+2026-03-05 11:00:00,node-a,n/a,54.6
+2026-03-05 21:20:00,node-b,"21,5",64.0
+2026-03-06 02:20:00,node-b,23.4C,73.3</code></pre>
+        </div>
+        <ol class="tasks">
+          <li>Open it inside a <code class="inl">with</code> block, encoded utf-8.</li>
+          <li>Convert each <code class="inl">temp_c</code> value to <code class="inl">float</code>.</li>
+          <li>Catch <code class="inl">ValueError</code> and count the bad rows instead of letting
+            the script crash.</li>
+          <li>Write the clean values out to <code class="inl">clean.json</code>.</li>
+          <li>Raise a clear error if the file is missing — do not fail silently.</li>
+          <li>Print how many rows you had to skip.</li>
+        </ol>
+        <div class="checkpoint">
+          <b>Your answer should be</b>
+          51 values kept, 9 rows skipped. Then corrupt a row on purpose and confirm the script
+          still survives.
+        </div>
+      </div>
+
+      <div>
+        <p class="panel-label">Hints</p>
+        <ul class="hints">
+          <li><code class="inl">with open(...)</code> closes the file for you, even on an exception.</li>
+          <li><code class="inl">csv.DictReader</code> gives you dict-like rows keyed by the header.</li>
+          <li><code class="inl">float("")</code> raises <code class="inl">ValueError</code> — so do
+            <code class="inl">"n/a"</code>, <code class="inl">"--"</code> and
+            <code class="inl">"23.4C"</code>.</li>
+          <li>Wrap only the risky line in <code class="inl">try</code>, never the whole loop body.</li>
+          <li><code class="inl">Path.exists()</code> checks before you read.</li>
+          <li><code class="inl">json.dump</code> writes the list back out.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="solve-bar">
+      <p class="solve-note">The nine broken values are all different on purpose: blanks, sentinels,
+        a decimal comma and a stray unit.</p>
+      <button class="btn btn-solve" type="button" data-solve="3" aria-expanded="false"
+              aria-controls="sol3">Show solution <span class="chev">▼</span></button>
+    </div>
+
+    <div class="solution" id="sol3" hidden>
+      <div>
+        <p class="panel-label">Worked solution</p>
+        <div class="codewrap">
+          <pre><code class="language-python"># clean_readings.py
+import csv
+import json
+from pathlib import Path
+
+path = Path("data/readings.csv")
+if not path.exists():
+    raise FileNotFoundError(f"missing: {path}")
+
+clean, bad = [], 0
+with open(path, encoding="utf-8") as f:
+    for row in csv.DictReader(f):
+        try:
+            clean.append(float(row["temp_c"]))
+        except ValueError:
+            bad += 1
+
+with open("clean.json", "w", encoding="utf-8") as f:
+    json.dump(clean, f, indent=2)
+
+print(f"kept {len(clean)} values, skipped {bad} bad rows")
+# kept 51 values, skipped 9 bad rows</code></pre>
+          <button class="copy" type="button">copy</button>
+        </div>
+      </div>
+      <div>
+        <p class="panel-label">Why it works</p>
+        <ul class="why">
+          <li>The guard fails fast with a message that names the path it could not find.</li>
+          <li><code class="inl">try</code> wraps one line only, so a typo elsewhere still raises
+            instead of being counted as bad data.</li>
+          <li>Bad rows are counted, not silently lost — you can report the data quality afterwards.</li>
+          <li><code class="inl">with</code> closes the file even when an exception is raised.</li>
+          <li>An explicit <code class="inl">encoding="utf-8"</code> makes the script behave the same
+            on WSL2 and on Windows.</li>
+          <li>Watch the edge case: <code class="inl">float("nan")</code> does <em>not</em> raise —
+            it returns a float. Only genuinely unparseable text is caught here.</li>
+        </ul>
+        <div class="slip">
+          <b>Common slip</b>
+          A bare <code class="inl">except:</code> that swallows your own typos and reports them as
+          bad data. Name the exception you can recover from and re-raise the rest.
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- ============================================================ EX 4 -->
+  <article class="ex" id="ex4">
+    <div class="ex-head">
+      <div class="ex-num">04</div>
+      <div class="ex-title">
+        <h2>An end-to-end mini workflow</h2>
+        <div class="meta">
+          <span>Section 4</span><span>25 minutes</span>
+          <span>pandas · matplotlib · scikit-learn</span>
+          <span>rehearsal for the closing lab</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ex-body">
+      <div>
+        <p class="panel-label">Your task</p>
+        <div class="codewrap">
+          <p class="code-cap">Use the built-in digits dataset — no download needed</p>
+          <pre><code class="language-python">from sklearn.datasets import load_digits
+
+d = load_digits(as_frame=True)</code></pre>
+          <button class="copy" type="button">copy</button>
+        </div>
+        <ol class="tasks">
+          <li>Load it into a pandas DataFrame.</li>
+          <li>Print the shape and the class counts.</li>
+          <li>Show one digit with <code class="inl">plt.imshow()</code>.</li>
+          <li>Split 80/20, stratified, with a fixed seed.</li>
+          <li>Fit a <code class="inl">RandomForestClassifier</code> and report accuracy on the
+            held-out test set.</li>
+          <li><em>Bonus:</em> print a confusion matrix and see which digits get mixed up.</li>
+        </ol>
+        <div class="checkpoint">
+          <b>Expected result</b>
+          A shape of <code class="inl">(1797, 65)</code> and test accuracy around
+          <code class="inl">0.97</code>.
+        </div>
+      </div>
+
+      <div>
+        <p class="panel-label">Hints</p>
+        <ul class="hints">
+          <li><code class="inl">load_digits(as_frame=True)</code> returns pandas objects directly.</li>
+          <li>64 columns = one 8×8 grayscale image, flattened. The 65th is the target.</li>
+          <li><code class="inl">value_counts()</code> checks the class balance.</li>
+          <li><code class="inl">imshow(d.images[0], cmap="gray")</code> plots the unflattened image.</li>
+          <li><code class="inl">stratify=</code> keeps all ten digits proportional in both splits.</li>
+          <li><code class="inl">model.score()</code> returns accuracy directly.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="solve-bar">
+      <p class="solve-note">Once it runs, swap in a different classifier and compare the score —
+        the surrounding four steps do not change.</p>
+      <button class="btn btn-solve" type="button" data-solve="4" aria-expanded="false"
+              aria-controls="sol4">Show solution <span class="chev">▼</span></button>
+    </div>
+
+    <div class="solution" id="sol4" hidden>
+      <div>
+        <p class="panel-label">Worked solution</p>
+        <div class="codewrap">
+          <pre><code class="language-python">import matplotlib.pyplot as plt
+from sklearn.datasets import load_digits
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import ConfusionMatrixDisplay
+
+# 1-2. explore before you model
+d = load_digits(as_frame=True)
+df = d.frame
+print(df.shape)                     # (1797, 65)
+print(df["target"].value_counts())
+
+# 3. one sample, as the 8x8 image it really is
+plt.imshow(d.images[0], cmap="gray")
+plt.title(f"label: {d.target[0]}")
+plt.show()
+
+# 4. hold the test set out BEFORE fitting anything
+X_train, X_test, y_train, y_test = train_test_split(
+    d.data, d.target, test_size=0.2,
+    stratify=d.target, random_state=42)
+
+# 5. fit, then score on data the model has never seen
+model = RandomForestClassifier(n_estimators=200, random_state=42)
+model.fit(X_train, y_train)
+print(f"accuracy: {model.score(X_test, y_test):.3f}")   # around 0.97
+
+# 6. bonus - which digits get mistaken for which?
+ConfusionMatrixDisplay.from_estimator(model, X_test, y_test, cmap="Blues")
+plt.show()</code></pre>
+          <button class="copy" type="button">copy</button>
+        </div>
+      </div>
+      <div>
+        <p class="panel-label">Why it works</p>
+        <ul class="why">
+          <li>Shape and class counts catch bad data early, before you spend a training run on it.</li>
+          <li>Each row is one flattened 8×8 image — 64 pixel columns plus the target.</li>
+          <li><code class="inl">stratify=d.target</code> keeps all ten classes evenly represented
+            in both splits.</li>
+          <li>The test set is held out before anything is fitted, so the score means something.</li>
+          <li><code class="inl">score()</code> is accuracy; the confusion matrix shows <em>which</em>
+            digits get confused — 4 with 9, 3 with 8.</li>
+          <li><code class="inl">random_state=42</code> fixes both the split and the forest, so your
+            neighbour gets the same number.</li>
+          <li>The same four beats every time: <b>split, fit, predict, evaluate.</b></li>
+        </ul>
+        <div class="slip">
+          <b>Common slip</b>
+          Fitting on all the data and then reporting test accuracy. The number will look excellent
+          and mean nothing.
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <footer>
+    <p>Bring Sections 1–4 together in the closing lab: <b>load → clean → explore → model → extend</b>,
+      on <code class="inl">data/sensors.csv</code>.</p>
+    <p>Version your work with git as you go, and pin dependencies with <code class="inl">uv</code>
+      so your results stay reproducible. The official documentation is the fastest path to fluency.</p>
+  </footer>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+  (function () {
+    "use strict";
+
+    /* syntax highlighting — the page is fully readable without it */
+    if (window.hljs) {
+      document.querySelectorAll("pre code").forEach(function (block) {
+        try { window.hljs.highlightElement(block); } catch (e) { /* plain text is fine */ }
+      });
+    }
+
+    var buttons = Array.prototype.slice.call(document.querySelectorAll("[data-solve]"));
+    var allBtn = document.getElementById("all-btn");
+    var countEl = document.getElementById("count");
+
+    function isOpen(btn) {
+      return btn.getAttribute("aria-expanded") === "true";
+    }
+
+    function setOpen(btn, open) {
+      var panel = document.getElementById(btn.getAttribute("aria-controls"));
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+      btn.innerHTML = (open ? "Hide solution " : "Show solution ") +
+                      '<span class="chev">▼</span>';
+      if (panel) { panel.hidden = !open; }
+      var pip = document.querySelector('.pip[data-pip="' + btn.dataset.solve + '"]');
+      if (pip) { pip.classList.toggle("on", open); }
+    }
+
+    function sync() {
+      var n = buttons.filter(isOpen).length;
+      countEl.textContent = n + " of " + buttons.length + " solutions shown";
+      allBtn.textContent = n === buttons.length ? "Hide all solutions" : "Reveal all solutions";
+    }
+
+    buttons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        setOpen(btn, !isOpen(btn));
+        sync();
+      });
+    });
+
+    allBtn.addEventListener("click", function () {
+      var openAll = buttons.filter(isOpen).length !== buttons.length;
+      buttons.forEach(function (btn) { setOpen(btn, openAll); });
+      sync();
+      if (!openAll) { window.scrollTo({ top: 0, behavior: "smooth" }); }
+    });
+
+    /* copy buttons */
+    document.querySelectorAll(".copy").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var pre = btn.parentElement.querySelector("pre");
+        if (!pre) { return; }
+        var text = pre.innerText;
+        var done = function (ok) {
+          btn.textContent = ok ? "copied" : "select + ⌘C";
+          setTimeout(function () { btn.textContent = "copy"; }, 1600);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); },
+                                                   function () { done(false); });
+        } else {
+          done(false);
+        }
+      });
+    });
+
+    sync();
+  })();
+</script>
